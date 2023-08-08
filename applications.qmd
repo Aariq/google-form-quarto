@@ -1,0 +1,54 @@
+---
+title: "Applications for Course"
+format: html
+editor: visual
+toc: true
+comments: 
+  hypothesis: true
+---
+
+```{r}
+#| include: false
+library(googlesheets4)
+library(stringr)
+library(janitor)
+library(glue)
+```
+
+```{r}
+#| include: false
+
+applicants_raw <- read_sheet("1SUy92T7I3ZoEyZjTxLP7F5pAup58c0xKl0QbvElIfxA")
+questions <-
+  colnames(applicants_raw) |> 
+  str_replace("How comfortable are you with the following\\? \\[(.+)\\]", "\\1")
+applicants <- 
+  applicants_raw |> 
+  clean_names()
+```
+
+```{r}
+#| echo: false
+#| output: asis
+
+glue("## {applicants$name}
+     {applicants$career_stage} | {applicants$department} | <{applicants$email}>
+     
+     #### How comfortable are you with the following? 
+     
+     |                |                    |
+     |----------------|--------------------|
+     |{questions[6]}  | {applicants[[6]]}  |
+     |{questions[7]}  | {applicants[[7]]}  |
+     |{questions[8]}  | {applicants[[8]]}  |
+     |{questions[9]}  | {applicants[[9]]}  |
+     |{questions[10]} | {applicants[[10]]} |
+     
+     #### {questions[11]}
+     
+     {applicants[[11]]}
+     
+     
+     ")
+```
+
